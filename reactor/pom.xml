@@ -9,13 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rxjava</artifactId>
+    <artifactId>reactor</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>io.reactivex.rxjava3</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>3.0.13</version>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>3.4.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <version>3.4.7</version>
+            <scope>test</scope>
         </dependency>
 
 
@@ -27,36 +34,14 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/com.safframework.rxcache/rxcache-core -->
-        <dependency>
-            <groupId>com.safframework.rxcache</groupId>
-            <artifactId>rxcache-core</artifactId>
-            <version>2.0.1</version>
-            <scope>runtime</scope>
-        </dependency>
-
-
     </dependencies>
+
+
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <name>jcenter</name>
-            <url>https://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
 
 </project>

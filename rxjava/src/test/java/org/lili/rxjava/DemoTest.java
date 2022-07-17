@@ -1,13 +1,14 @@
 package org.lili.rxjava;
 
-import io.reactivex.*;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.observables.ConnectableObservable;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.AsyncSubject;
+
+import io.reactivex.rxjava3.core.*;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.observables.ConnectableObservable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.AsyncSubject;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -85,11 +86,6 @@ class DemoTest {
                     @Override
                     public void run() throws Exception {
                         System.out.println("subscribe run");
-                    }
-                }, new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        System.out.println("subscribe accept");
                     }
                 });
     }
@@ -336,8 +332,86 @@ class DemoTest {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        System.out.println("sub:"+ s);
+                        System.out.println("sub:" + s);
                     }
+                });
+    }
+
+
+    @Test
+    void test11() {
+        Observable.fromArray("one", "two", "three")
+                .take(2)
+                .subscribe((arg) -> {
+                    System.out.println(arg);
+                });
+    }
+
+    @Test
+    void test12() {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(@NotNull ObservableEmitter<String> emitter) throws Exception {
+                emitter.onNext("");
+            }
+        });
+    }
+
+    class Person {
+        private int age;
+        private String name;
+
+        public Person(int age, String name) {
+            this.age = age;
+            this.name = name;
+        }
+    }
+
+    public Observable<Person> getPersonById(String id) {
+        return Observable.create(new ObservableOnSubscribe<Person>() {
+            @Override
+            public void subscribe(@NotNull ObservableEmitter<Person> emitter) throws Exception {
+                try {
+                    //from network or db
+                    Person p = new Person(2, "lili");
+                    emitter.onNext(p);
+                    emitter.onComplete();
+                } catch (Exception e) {
+                    emitter.onError(e);
+                }
+            }
+        });
+    }
+
+
+    @Test
+    void doOnNext() {
+        Observable.just(1, 2, 3)
+                .doOnNext(integer -> {
+                    if (integer.equals(2)) {
+                        throw new RuntimeException("I dont like 2");
+                    }
+                })
+                .doOnError(throwable -> {
+                    System.err.println("Whoops:" + throwable.getMessage());
+                })
+                .doOnComplete(() -> {
+                    System.out.println("Complete Observable");
+                })
+                .subscribe(integer -> System.out.println("Got:" + integer));
+    }
+
+    @Test
+    void testFuzzBuzz() {
+        Observable.interval(10, TimeUnit.MICROSECONDS)
+                .take(100)
+                .map(input -> {
+                    if (input % 3 == 0 && input % 5 == 0) return "FizzBizz";
+                    else if (input % 3 == 0) return "Fizz";
+                    else if (input % 5 == 0) return "Bizz";
+                    return Long.toString(input);
+                })
+                .subscribe(System.out::println, throwable -> {
                 });
     }
 
